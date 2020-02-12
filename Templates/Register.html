@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Register</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style_register.css') }}">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+</head>
+<body id="body">
+    <form action="{{ url_for('main') }}" method="POST">
+        <div class="card" id="register">
+
+            <div  class="card-body">
+                <div class="form-group">
+                    <label for="exampleInputEmail1">Name</label>
+                    <input value="" name="name"  class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Name">
+                </div>
+                <div class="form-group">
+                    <label for="exampleInputEmail1">Username</label>
+                    <input value="" name="username" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Username">
+                </div>
+                <div class="form-group">
+                    <label for="exampleInputPassword1">Password</label>
+                    <input value="" name="password" type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+                </div>
+                <div class="form-group">
+                    <label for="exampleInputPassword1">Comfirm password</label>
+                    <input value="" name="Cpassword" type="password" class="form-control" id="exampleInputPassword1" placeholder="Comfirm password">
+                </div>
+                <button value="submit" name="submit" type="submit" class="btn btn-primary form-control">Submit</button>
+                <!-- <div class="text-center "><a href="#" class="text-white">register</a></div> -->
+                <button value="cancel" name="cancel" type="submit" class="btn btn-primary form-control" style="margin-top:3px;">Cancel</button>
+            </div>
+
+
+        </div>
+    </form>
+</body>
+
+<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+</html>
