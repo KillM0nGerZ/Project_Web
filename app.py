@@ -19,6 +19,8 @@ def index():
 # def register():
 #     return render_template('Register.html')
 
+# redirect(url_for('.....')) เปลี่ยน route /....
+
 
 @app.route("/wellcom",methods=['GET', 'POST'])
 def wellcom():
@@ -28,13 +30,14 @@ def wellcom():
 def main():
     if request.method == "POST":
         if request.form.get('register') == 'register':
+            print("เปิด")
             return redirect(url_for('register')) #เปิดหน้า register
         elif request.form.get('login') == 'login':
             username = request.form.get('username')
             password = request.form.get('password')
             print(username,password)
             if check_login(username,password): #ส่งไปเช็ครหัสผ่าน
-                return Home() #เรียกใช้ root /main
+                return redirect(url_for('home')) #เรียกใช้ route /home
             else:
                 return "<h>รหัสไม่ถูกต้อง</h>"
 
@@ -115,7 +118,7 @@ def register():
     return render_template("Register.html")
 
 @app.route("/home",methods=['GET', 'POST'])
-def Home():
+def home():
     return render_template("/Home.html")
 
 
