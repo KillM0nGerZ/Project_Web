@@ -30,7 +30,6 @@ def wellcom():
 def main():
     if request.method == "POST":
         if request.form.get('register') == 'register':
-            print("เปิด")
             return redirect(url_for('register')) #เปิดหน้า register
         elif request.form.get('login') == 'login':
             username = request.form.get('username')
@@ -56,7 +55,7 @@ def main():
 #-------------------------- เก็บข้อมูลลง Data base --------------------------------
 # @app.route("/submit/<string:name>/<string:username>/<string:password>",methods=['GET', 'POST'])
 def submit(name,username,password):
-    print(name,username,password)
+    # print(name,username,password)
     if check_register(name,username):
         cur = mysql.connection.cursor()
         cur.execute("INSERT INTO member (name,username,password) VAlUES (%s,%s,%s)",(name,username,password))
@@ -127,4 +126,4 @@ def home():
 
 if __name__ == "__main__":
     app.debug =True
-    app.run(host="localhost",port=8000)
+    app.run(host="localhost",port=800)
