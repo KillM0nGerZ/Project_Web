@@ -1,0 +1,26 @@
+/* @media (min-width: 414px){
+    #img1{width: 800px; height: 400px; }
+    #img2{width: 800px; height: 400px; }
+    #img3{width: 800px; height: 400px; }
+}
+@media (max-width: 1568px){
+    #img1{width: 800px; height: 400px; }
+    #img2{width: 800px; height: 400px; }
+    #img3{width: 800px; height: 400px; }
+} */
+@media (min-width: 768px) and (max-width: 1549px) {
+    #img1{width: 800px; height: 100px; }
+    #img2{width: 800px; height: 100px; }
+    #img3{width: 800px; height: 400px; }
+}
+@media (min-width: 576px){
+    #img1{width: 800px; height: 200px; }
+    #img2{width: 800px; height: 200px; }
+    #img3{width: 800px; height: 200px; }
+}
+/* body center start */
+#body_menu{
+    margin: auto;
+    background-color: #322420;
+}
+/* body center stop */
