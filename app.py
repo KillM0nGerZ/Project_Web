@@ -60,7 +60,7 @@ def submit(name,username,password):
         cur = mysql.connection.cursor()
         cur.execute("INSERT INTO member (name,username,password) VAlUES (%s,%s,%s)",(name,username,password))
         mysql.connection.commit()
-        return "<h1>ผ่านน</h1>"
+        return redirect(url_for('login'))
     else:
         return "<h1>ไม่ผ่านน</h1>"
 #-------------------------- เก็บข้อมูลลง Data base --------------------------------
