@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 </head>
 <body id="body">
-    <form action="{{ url_for('main') }}" method="POST">
+    <form action="/login" method="POST">
         <div class="card" id="login">
 
             <div  class="card-body">
@@ -22,14 +22,16 @@
                     <input name="password" type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
                 </div>
                 <button type="submit" value ="login" name="login" class="btn btn-primary form-control">Login</button>
+            </form>
                 <!-- <div class="text-center "><a href="{{ url_for('register') }}" class="text-white">register</a></div> -->
-                <button type="submit" value ="register" name="register" class="btn btn-primary form-control" style="margin-top:3px;" >Register</button>
-            
+                <form action="{{ url_for('register') }}" method="GET" >
+                    <button type="submit" value ="register" name="send" class="btn btn-primary form-control" style="margin-top:3px;" >Register</button>
+                </form>
             </div>
 
 
         </div>
-    </form>
+    
 </body>
 
 <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>

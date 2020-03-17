@@ -1,6 +1,7 @@
-from flask import Flask, render_template, url_for,request,redirect
-from flask_mysqldb import MySQL
+from flask import Flask, render_template, redirect, request, url_for, session
+from flask_mysqldb import MySQL, MySQLdb
 from sqlalchemy import text
+import bcrypt
 
 app = Flask(__name__)
 app.config['MYSQL_USER']='root'
@@ -11,119 +12,118 @@ app.config['MYSQL_CURSORCLASS']='DictCursor'
 
 mysql = MySQL(app)
 
-@app.route("/")
-def index():
-    return render_template('Login.html')
+# @app.route("/main",methods=['GET','POST'])
+# def main():
+#     print("เข้า main")
+#     print(request.form.get('send'))
+#     if request.form.get('send') == 'register':
+#         print("เข้า register")
+#         return redirect(url_for('register'))
+#     elif request.form.get('send') == 'login':
+#         print("เข้า login")
+#         username = request.form['username']
+#         password = request.form['password']
+#         return redirect(url_for('/login'))
+#         # return login(username,password)
 
-# @app.route("/register",methods=['GET','POST'])
-# def register():
-#     return render_template('Register.html')
+# -------- Start index ----------- #
+@app.route('/')
+def home():
+    return render_template("Home.html")
+# -------- Stop index ------------ #
 
-# redirect(url_for('.....')) เปลี่ยน route /....
 
-
-@app.route("/wellcom",methods=['GET', 'POST'])
-def wellcom():
-    return "<h1>Hello world</h1>"
-
-@app.route("/main",methods=['GET', 'POST'])
-def main():
-    if request.method == "POST":
-        if request.form.get('register') == 'register':
-            return redirect(url_for('register')) #เปิดหน้า register
-        elif request.form.get('login') == 'login':
-            username = request.form.get('username')
-            password = request.form.get('password')
-            print(username,password)
-            if check_login(username,password): #ส่งไปเช็ครหัสผ่าน
-                return redirect(url_for('home')) #เรียกใช้ route /home
-            else:
-                return "<h>รหัสไม่ถูกต้อง</h>"
-
-        elif request.form.get('cancel') == 'cancel':
-            return redirect(url_for('login'))
-        elif request.form.get('submit') == 'submit':
-            name = request.form.get('name')
-            username = request.form.get('username')
-            password = request.form.get('password')
-            Cpassword = request.form.get('Cpassword')
-            # return redirect(url_for('submit',name=name,username=username,password=password))
-            return submit(name,username,password)
+# -------- Start OpenLogin ---------- #
+@app.route("/Login",methods=['GET', 'POST'])
+def Login():
+    return render_template("Login.html")
+# -------- Stop OpenLogin ---------- #
 
 
 
-#-------------------------- เก็บข้อมูลลง Data base --------------------------------
-# @app.route("/submit/<string:name>/<string:username>/<string:password>",methods=['GET', 'POST'])
-def submit(name,username,password):
-    # print(name,username,password)
-    if check_register(name,username):
-        cur = mysql.connection.cursor()
-        cur.execute("INSERT INTO member (name,username,password) VAlUES (%s,%s,%s)",(name,username,password))
-        mysql.connection.commit()
-        return redirect(url_for('login'))
-    else:
-        return "<h1>ไม่ผ่านน</h1>"
-#-------------------------- เก็บข้อมูลลง Data base --------------------------------
-
-
-
-
-#--------------------------- เช็คการสมัคร --------------------------------------
-def check_register(name,username):
-    cur = mysql.connection.cursor()
-    cur.execute("SELECT name,username FROM member")
-    data = cur.fetchall()
-    for j in range(0,len(data)):
-        if name == data[j]['name'] or username == data[j]['username'] :
-            item = False
-            break
-        else:
-            item = True
-    print(item)
-    return item
-#--------------------------- เช็คการสมัคร --------------------------------------
-
-
-
-
-#-------------------- เช็ครหัสผ่าน ------------------------------------#
-def check_login(username,password): 
-    cur = mysql.connection.cursor()
-    cur.execute("SELECT username,password FROM member WHERE username=%s",[username])
-    data = cur.fetchall()
-    print(data)
-    print(type(data))
-    print(username,password)
-    # print(type(data[0]['name']))
-    # print(type(name))
-    # print(name)
-    if data != (): #  ---> () ค่าว่างใน Tuples
-        if username == data[0]['username'] and password == data[0]['password']:
-            return True
-        else:
-            return False
-    else:
-        return False
-#-------------------- เช็ครหัสผ่าน ------------------------------------#
-
-
-
+# -------- Start Login ---------- #
 @app.route("/login",methods=['GET', 'POST'])
 def login():
-    return render_template("Login.html")
+    print(request.method)
+    if request.method == "POST":
+        username =request.form['username']
+        password =request.form['password']
+        # username =request.form.get('username')
+        # password =request.form.get('password')
+        print(username,password)
+        cur = mysql.connection.cursor()
+        cur.execute("SELECT * FROM member WHERE username=%s",[username])
+        user = cur.fetchall()
+        print(user[0]['password'])
+        if user != ():
+            if password == user[0]['password']:
+                session['name'] = user[0]['name']
+                session['username'] = user[0]['username']
+                return redirect(url_for("home"))
+        else:
+            return redirect(url_for("Login"))
+# -------- Stop Login ---------- #
 
-@app.route("/register",methods=['GET', 'POST'])
+
+
+
+# -------- Start register ---------- #
+@app.route('/register',methods=["GET", "POST"])
 def register():
-    return render_template("Register.html")
+    if request.method == 'GET':
+        return render_template("Register.html")
+    else:
+        name = request.form['name']
+        username = request.form['username']
+        password = request.form['password']
+        # hash_password = bcrypt.hashpw(password, bcrypt.gensalt())
+        Cpassword = request.form['Cpassword']
 
-@app.route("/home",methods=['GET', 'POST'])
-def home():
-    return render_template("/Home.html")
+        cur = mysql.connection.cursor()
+        cur.execute("INSERT INTO member (name,username,password) VALUES (%s,%s,%s)",(name,username,password))  # INSERT Database
+        print(cur)
+        mysql.connection.commit() 
+        # session['name'] = name            # save to session
+        # session['username'] = username    # save to session  
+
+        return redirect(url_for("Login"))
+
+# -------- Stop register ---------- #
 
 
 
+# -------- Start Logout ---------- #
+@app.route('/loguot')
+def loguot():
+    session.clear()  
+    return redirect(url_for("home"))
+# -------- Stop Logout ---------- #
+
+
+
+@app.route('/Runner')
+def Runner():
+    return render_template("Runner.html")
+
+
+@app.route('/Ranking')
+def Ranking():
+    return render_template("Ranking.html")
+
+
+@app.route('/r',methods=["GET", "POST"])
+def r():
+    # print(request.method)
+    # date = request.form.get('date')
+    # distance = request.form.get('distance')
+    # Num_time = request.form.get('Num_time')
+    # pace = request.form.get('pace')
+    # return 'Form submitted'
+    return redirect(url_for('r'))
 
 
 if __name__ == "__main__":
+    app.secret_key = 'super secret key'
+    app.config['SESSION_TYPE'] = 'filesystem'
     app.debug =True
     app.run(host="localhost",port=800)

@@ -1,0 +1,14 @@
+{% extends 'layout2.html' %}
+
+{% block title %} Ranking {% endblock %}
+
+
+{% block content %}
+{% if session['name'] %}
+<h>Table</h>
+{% else %}
+<h>Login please !! </h>
+{% endif %}
+
+
+{% endblock %}
