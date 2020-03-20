@@ -28,8 +28,8 @@ mysql = MySQL(app)
 
 # -------- Start index ----------- #
 @app.route('/')
-def home():
-    return render_template("Home.html")
+def index():
+    return render_template("index.html")
 # -------- Stop index ------------ #
 
 
@@ -57,9 +57,10 @@ def login():
         print(user[0]['password'])
         if user != ():
             if password == user[0]['password']:
+                session['mem_id'] = user[0]['mem_id']
                 session['name'] = user[0]['name']
                 session['username'] = user[0]['username']
-                return redirect(url_for("home"))
+                return redirect(url_for("index"))
         else:
             return redirect(url_for("Login"))
 # -------- Stop Login ---------- #
@@ -96,7 +97,7 @@ def register():
 @app.route('/loguot')
 def loguot():
     session.clear()  
-    return redirect(url_for("home"))
+    return redirect(url_for("index"))
 # -------- Stop Logout ---------- #
 
 
@@ -106,20 +107,31 @@ def Runner():
     return render_template("Runner.html")
 
 
+
+# -------------- show status --------------
+@app.route('/runner',methods=["GET", "POST"])
+def runner():
+    session['date'] = request.form['date']
+    session['distance'] = request.form['distance']
+    session['Num_time'] = request.form['Num_time']
+    session['pace'] = request.form['pace'] 
+
+
+    cur = mysql.connection.cursor()
+    cur.execute("INSERT INTO runner (mem_id,distance,Num_time,pace,date) VALUES (%s,%s,%s,%s,%s)",(session['mem_id'],session['distance'],session['Num_time'],session['pace'],session['date']))  # INSERT Database
+    print(cur)
+    mysql.connection.commit()
+
+    return redirect(url_for("Runner"))
+# -------------- show status --------------
+
+
+
 @app.route('/Ranking')
 def Ranking():
     return render_template("Ranking.html")
 
 
-@app.route('/r',methods=["GET", "POST"])
-def r():
-    # print(request.method)
-    # date = request.form.get('date')
-    # distance = request.form.get('distance')
-    # Num_time = request.form.get('Num_time')
-    # pace = request.form.get('pace')
-    # return 'Form submitted'
-    return redirect(url_for('r'))
 
 
 if __name__ == "__main__":
