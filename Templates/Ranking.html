@@ -5,9 +5,53 @@
 
 {% block content %}
 {% if session['name'] %}
-<h>Table</h>
+<h>อันดับการวิ่ง</h>
+<table class="table">
+    <thead class="thead-dark">
+      <tr>
+        <th scope="col">อันดับ</th>
+        <th scope="col">ชื่อ</th>
+        <th scope="col">ระยะทาง</th>
+        <th scope="col">เพซเฉลี่ย</th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for data in row %}
+      <tr>
+        <th scope="row">{{ data.num }}</th>
+        <td>{{ data.name }}</td>
+        <td>{{ data.distance }}</td>
+        <td>{{ data.avg_pace }}</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
 {% else %}
-<h>Login please !! </h>
+<!-- <h>Login please !! </h> -->
+<h>อันดับการวิ่ง</h>
+<table class="table">
+    <thead class="thead-dark">
+      <tr>
+        <th scope="col">อันดับ</th>
+        <th scope="col">ชื่อ</th>
+        <th scope="col">ระยะทาง</th>
+        <th scope="col">เพซเฉลี่ย</th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for data in row %}
+      <tr>
+        <th scope="row">{{ data.num }}</th>
+        <td>{{ data.name }}</td>
+        <td>{{ data.distance }}</td>
+        <td>{{ data.avg_pace }}</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+
+
+
 {% endif %}
 
 

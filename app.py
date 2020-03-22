@@ -104,9 +104,51 @@ def loguot():
 
 @app.route('/Runner')
 def Runner():
-    return render_template("Runner.html")
+    try:
+        cur = mysql.connection.cursor()
+        cur.execute("SELECT * FROM runner WHERE mem_id = "+str(session['mem_id']))
+        data = cur.fetchall()
+        count = 0
+        sum_distance = 0
+        sum_pace = 0
+        avg_distance = 0
+        avg_pace = 0
+
+        if data != (): # เช็คค่าว่างของ  User
+            for i in data:
+                count +=1
+                sum_distance +=float(i['distance'])
+                sum_pace += float(i['pace'])
+            avg_distance = "%.2f" % (sum_distance/count)
+            avg_pace = "%.2f" % (sum_pace/count)
+
+        session['count'] = count
+        session['sum_distance'] = sum_distance
+        session['avg_distance'] = avg_distance
+        session['avg_pace'] =  avg_pace
 
 
+        cur = mysql.connection.cursor()
+        cur.execute("SELECT * FROM ranking WHERE mem_id = "+str(session['mem_id']))
+        checkdata = cur.fetchall()
+        print(checkdata)
+        if checkdata == ():
+            cur.execute("INSERT INTO ranking (mem_id,distance,avg_distance,run_num,avg_pace) VALUES (%s,%s,%s,%s,%s)",(session['mem_id'],session['sum_distance'],session['avg_distance'],session['count'],session['avg_pace']))
+            mysql.connection.commit()
+        else:
+            cur.execute("UPDATE ranking SET distance ="+str(session['sum_distance'])+",avg_distance ="+str(session['avg_distance'])+ ",run_num ="+str(session['count'])+",avg_pace ="+str(session['avg_pace'])+" WHERE mem_id ="+str(session['mem_id']))
+            mysql.connection.commit()
+        return render_template("Runner.html",row=data)
+
+
+
+
+
+    except:
+        print("Error")
+        return render_template("Runner.html")
+
+    
 
 # -------------- show status --------------
 @app.route('/runner',methods=["GET", "POST"])
@@ -129,7 +171,18 @@ def runner():
 
 @app.route('/Ranking')
 def Ranking():
-    return render_template("Ranking.html")
+    cur = mysql.connection.cursor()
+    # cur.execute("SELECT * FROM ranking ORDER BY distance DESC")
+    cur.execute("SELECT member.name,ranking.distance, ranking.avg_pace FROM ranking INNER JOIN member ON member.mem_id = ranking.mem_id ORDER BY distance DESC")
+    data = cur.fetchall()
+    num=0
+    item=[]
+    for i in data:
+        num+=1
+        i['num']=num
+        item.append(i)
+    item = tuple(item)
+    return render_template("Ranking.html",row=data,num=item)
 
 
 

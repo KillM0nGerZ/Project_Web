@@ -62,11 +62,7 @@
 
 
 
-{% for wedapp in row %}
-<h>asdasd</h>
-<h>{{ wedapp.mem_id }}</h>
-<h>{{ wedapp.pace }}</h>
-{% endfor %}
+
 
 
 
@@ -75,10 +71,10 @@
 <!-- start Show value -->
 <div class="card">
     <div class="card-body">
-        <p class="text-lowercase">ระยะทาง</p>
-        <p class="text-lowercase">จำนวนการวิ่ง</p>
-        <p class="text-lowercase">ระยะทางเฉลี่ย</p>
-        <p class="text-lowercase">เพซ</p>
+        <p class="text-lowercase">ระยะทาง {{session['sum_distance']}} กิโลเมตร</p>
+        <p class="text-lowercase">จำนวนการวิ่ง {{session['count']}} ครั้ง</p>
+        <p class="text-lowercase">ระยะทางเฉลี่ย {{session['avg_distance']}} กิโลเมตร</p>
+        <p class="text-lowercase">เพซเฉลี่ย {{session['avg_pace']}} </p>
 
         <table class="table">
             <thead class="thead-dark">
@@ -90,13 +86,15 @@
               </tr>
             </thead>
             <tbody>
-
+              {% for data in row %}
               <tr>
-                <th scope="row">1</th>
-                <td>Mark</td>
-                <td>Otto</td>
-                <td>@mdo</td>
+                <th scope="row">{{ data.date }}</th>
+                <td>{{ data.distance }}</td>
+                <td>{{ data.Num_time }}</td>
+                <td>{{ data.pace }}</td>
               </tr>
+              {% endfor %}
+
             </tbody>
           </table>
           
@@ -140,7 +138,8 @@
     var distance = document.getElementById("distance").value;
     var Num_time = document.getElementById("Num_time").value;
     var result = Num_time / distance;
-    window.alert(result);
+    // window.alert(result);
+    var result = result.toFixed(2)
     var x = result.toString();
     document.getElementById("pace").value = x;
     // document.getElementsByClassName.value = "sssss";
