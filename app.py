@@ -1,7 +1,10 @@
-from flask import Flask, render_template, redirect, request, url_for, session
+from flask import Flask, render_template, redirect, request, url_for, session,flash
 from flask_mysqldb import MySQL, MySQLdb
 from sqlalchemy import text
 import bcrypt
+
+import checkError as c
+
 
 app = Flask(__name__)
 app.config['MYSQL_USER']='root'
@@ -52,17 +55,23 @@ def login():
         # password =request.form.get('password')
         print(username,password)
         cur = mysql.connection.cursor()
-        cur.execute("SELECT * FROM member WHERE username=%s",[username])
+        # cur.execute("SELECT * FROM member WHERE username=%s",[username])
+        cur.execute("SELECT * FROM member ")
         user = cur.fetchall()
-        print(user[0]['password'])
-        if user != ():
-            if password == user[0]['password']:
-                session['mem_id'] = user[0]['mem_id']
-                session['name'] = user[0]['name']
-                session['username'] = user[0]['username']
-                return redirect(url_for("index"))
+        if c.checkLogin(user,username,password):
+            print(user[0]['password'])
+            if user != ():
+                if password == user[0]['password']:
+                    session['mem_id'] = user[0]['mem_id']
+                    session['name'] = user[0]['name']
+                    session['username'] = user[0]['username']
+                    return redirect(url_for("index"))
+            else:
+                return redirect(url_for("Login"))
         else:
+            flash("รหัสผ่านผิด")
             return redirect(url_for("Login"))
+
 # -------- Stop Login ---------- #
 
 
@@ -80,14 +89,25 @@ def register():
         # hash_password = bcrypt.hashpw(password, bcrypt.gensalt())
         Cpassword = request.form['Cpassword']
 
-        cur = mysql.connection.cursor()
-        cur.execute("INSERT INTO member (name,username,password) VALUES (%s,%s,%s)",(name,username,password))  # INSERT Database
-        print(cur)
-        mysql.connection.commit() 
-        # session['name'] = name            # save to session
-        # session['username'] = username    # save to session  
+        if c.chaeckPassword(password,Cpassword):
+            cur = mysql.connection.cursor()
+            cur.execute("SELECT * FROM member ")
+            user = cur.fetchall()
+            if c.checkRegister(user,username,password):
+                cur = mysql.connection.cursor()
+                cur.execute("INSERT INTO member (name,username,password) VALUES (%s,%s,%s)",(name,username,password))  # INSERT Database
+                print(cur)
+                mysql.connection.commit() 
+                # session['name'] = name            # save to session
+                # session['username'] = username    # save to session  
 
-        return redirect(url_for("Login"))
+                return redirect(url_for("Login"))
+            else:
+                flash("Username นี้ไม่สามารถใช้งานได้")
+                return render_template("Register.html")
+        else:
+            flash("กรุณากรอก password ให้ถูกต้อง")
+            return render_template("Register.html")
 
 # -------- Stop register ---------- #
 

@@ -9,6 +9,18 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 </head>
 <body id="body">
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-primary alert-dismissible fade show" role="alert">
+                    <span>{{ message }}</span>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            {% endfor %}
+        {% endif %}
+        {% endwith %}
     <form action="/login" method="POST">
         <div class="card" id="login">
 
@@ -27,9 +39,8 @@
                 <form action="{{ url_for('register') }}" method="GET" >
                     <button type="submit" value ="register" name="send" class="btn btn-primary form-control" style="margin-top:3px;" >Register</button>
                 </form>
+                <a style="margin:auto; display:block; text-align:center;" href="{{ url_for('index') }}"> Cancel </a>
             </div>
-
-
         </div>
     
 </body>

@@ -9,6 +9,20 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 </head>
 <body id="body">
+
+
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-primary alert-dismissible fade show" role="alert">
+                <span>{{ message }}</span>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        {% endfor %}
+    {% endif %}
+    {% endwith %}
     <form action="{{ url_for('register') }}" method="POST">
         <div class="card" id="register">
 
@@ -29,9 +43,12 @@
                     <label for="exampleInputPassword1">Comfirm password</label>
                     <input value="" name="Cpassword" type="password" class="form-control" id="exampleInputPassword1" placeholder="Comfirm password">
                 </div>
-                <button value="submit" name="submit" type="submit" class="btn btn-primary form-control">Submit</button>
+                <input value="submit" name="send" type="submit" class="btn btn-primary form-control">
+                
                 <!-- <div class="text-center "><a href="#" class="text-white">register</a></div> -->
-                <button value="cancel" name="cancel" type="submit" class="btn btn-primary form-control" style="margin-top:3px;">Cancel</button>
+                <form action="{{ url_for('Login') }}">
+                    <input value="cancel" name="send" type="submit" class="btn btn-primary form-control" style="margin-top:3px;">
+                </form>
             </div>
 
 
