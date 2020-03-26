@@ -61,11 +61,13 @@ def login():
         if c.checkLogin(user,username,password):
             print(user[0]['password'])
             if user != ():
-                if password == user[0]['password']:
-                    session['mem_id'] = user[0]['mem_id']
-                    session['name'] = user[0]['name']
-                    session['username'] = user[0]['username']
-                    return redirect(url_for("index"))
+                for i in user:
+                    if username == i['username']:
+                        print(user[0])
+                        session['mem_id'] = i['mem_id']
+                        session['name'] = i['name']
+                        session['username'] = i['username']
+                        return redirect(url_for("index"))
             else:
                 return redirect(url_for("Login"))
         else:
@@ -89,7 +91,7 @@ def register():
         # hash_password = bcrypt.hashpw(password, bcrypt.gensalt())
         Cpassword = request.form['Cpassword']
 
-        
+
         if c.PasswordNUM(password,Cpassword):
             if c.chaeckPassword(password,Cpassword):
                 cur = mysql.connection.cursor()
