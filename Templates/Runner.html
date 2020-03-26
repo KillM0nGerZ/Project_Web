@@ -11,7 +11,18 @@
 <h1></h1>
 
 
-
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+    {% for message in messages %}
+        <div class="alert alert-primary alert-dismissible fade show" role="alert">
+            <span>{{ message }}</span>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    {% endfor %}
+{% endif %}
+{% endwith %}
 <!-- start input value -->
 <div class="card">
     <div class="card-body">
@@ -26,7 +37,7 @@
             <style>.bootstrap-iso .formden_header h2, .bootstrap-iso .formden_header p, .bootstrap-iso form{font-family: Arial, Helvetica, sans-serif; color: black}.bootstrap-iso form button, .bootstrap-iso form button:hover{color: white !important;} .asteriskField{color: red;}</style>
 
 
-
+            
             <div class="form-group">
                 <label for="formGroupExampleInput2">วันที่</label>
                 <div class="input-group">
@@ -38,18 +49,22 @@
 
             </div>
             <div class="form-group">
-              <label for="formGroupExampleInput2">ระยะทาง</label>
+              <label for="formGroupExampleInput2">ระยะทาง (กิโลเมตร)</label>
               <input type="text" class="form-control" id="distance"  name="distance" placeholder="กิโลเมตร" value="{{session['distance']}}">
             </div>
             <div class="form-group">
-                <label for="formGroupExampleInput2">จำนวนเวลา</label>
+                <label for="formGroupExampleInput2">จำนวนเวลา (นาที)</label>
                 <input type="text" class="form-control" id="Num_time" name="Num_time" placeholder="นาที" value="{{session['Num_time']}}">
               </div>
-              <div class="form-group">
+              <div class="form-group" id="paceTag">
                 <label for="formGroupExampleInput2">เพซ</label>
-                <input type="text" class="form-control" id="pace" name="pace"  placeholder="-" value="{{session['pace']}}">
+                <input type="text" class="form-control" id="pace" name="pace"  placeholder="-" value="{{session['pace']}}" readonly>
               </div>
-            <input id="Enter" type="submit" onclick="calPace()">
+            <button id="Enter" type="submit" onclick="calPace()" class="btn btn-primary form-control" style="margin-top:3px;">Calculate</button>
+
+        </form>
+        <form action="{{ url_for('clear') }}">
+          <button type="submit" value ="Clear" name="send" class="btn btn-danger form-control" style="margin-top:3px;" >Clear</button>
         </form>
 
 
@@ -71,6 +86,7 @@
 <!-- start Show value -->
 <div class="card">
     <div class="card-body">
+        <p class="font-weight-bold" style="margin:auto; display:block; text-align:center;font-size:200%;" > ข้อมูลของนักวิ่ง </p>
         <p class="text-lowercase">ระยะทาง {{session['sum_distance']}} กิโลเมตร</p>
         <p class="text-lowercase">จำนวนการวิ่ง {{session['count']}} ครั้ง</p>
         <p class="text-lowercase">ระยะทางเฉลี่ย {{session['avg_distance']}} กิโลเมตร</p>
@@ -141,6 +157,7 @@
     // window.alert(result);
     var result = result.toFixed(2)
     var x = result.toString();
+    // document.getElementById("paceTag").style.visibility = "none";
     document.getElementById("pace").value = x;
     // document.getElementsByClassName.value = "sssss";
   }

@@ -21,3 +21,26 @@ def chaeckPassword(password,Cpassword):
     return password == Cpassword
 
 
+
+def checkRunner(date,distance,Num_time):
+    if date == "" or distance == "" or Num_time == "" :
+        return False
+    else:
+        return True
+
+def checkDigit(distance,Num_time):
+    try:
+        float(distance)
+        float(Num_time)
+        return True
+    except:
+        return False
+
+def PasswordNUM(password,Cpassword):
+    try:
+        float(password)
+        float(Cpassword)
+        return True
+    except:
+        return False
+

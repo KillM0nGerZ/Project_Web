@@ -89,24 +89,29 @@ def register():
         # hash_password = bcrypt.hashpw(password, bcrypt.gensalt())
         Cpassword = request.form['Cpassword']
 
-        if c.chaeckPassword(password,Cpassword):
-            cur = mysql.connection.cursor()
-            cur.execute("SELECT * FROM member ")
-            user = cur.fetchall()
-            if c.checkRegister(user,username,password):
+        
+        if c.PasswordNUM(password,Cpassword):
+            if c.chaeckPassword(password,Cpassword):
                 cur = mysql.connection.cursor()
-                cur.execute("INSERT INTO member (name,username,password) VALUES (%s,%s,%s)",(name,username,password))  # INSERT Database
-                print(cur)
-                mysql.connection.commit() 
-                # session['name'] = name            # save to session
-                # session['username'] = username    # save to session  
+                cur.execute("SELECT * FROM member ")
+                user = cur.fetchall()
+                if c.checkRegister(user,username,password):
+                    cur = mysql.connection.cursor()
+                    cur.execute("INSERT INTO member (name,username,password) VALUES (%s,%s,%s)",(name,username,password))  # INSERT Database
+                    print(cur)
+                    mysql.connection.commit() 
+                    # session['name'] = name            # save to session
+                    # session['username'] = username    # save to session  
 
-                return redirect(url_for("Login"))
+                    return redirect(url_for("Login"))
+                else:
+                    flash("Username นี้ไม่สามารถใช้งานได้")
+                    return render_template("Register.html")
             else:
-                flash("Username นี้ไม่สามารถใช้งานได้")
+                flash("กรุณากรอก password ให้ถูกต้อง")
                 return render_template("Register.html")
         else:
-            flash("กรุณากรอก password ให้ถูกต้อง")
+            flash("กรุณากรอก password เฉพาะตัวเลข")
             return render_template("Register.html")
 
 # -------- Stop register ---------- #
@@ -159,13 +164,7 @@ def Runner():
             cur.execute("UPDATE ranking SET distance ="+str(session['sum_distance'])+",avg_distance ="+str(session['avg_distance'])+ ",run_num ="+str(session['count'])+",avg_pace ="+str(session['avg_pace'])+" WHERE mem_id ="+str(session['mem_id']))
             mysql.connection.commit()
         return render_template("Runner.html",row=data)
-
-
-
-
-
     except:
-        print("Error")
         return render_template("Runner.html")
 
     
@@ -173,19 +172,46 @@ def Runner():
 # -------------- show status --------------
 @app.route('/runner',methods=["GET", "POST"])
 def runner():
+
+
     session['date'] = request.form['date']
     session['distance'] = request.form['distance']
     session['Num_time'] = request.form['Num_time']
-    session['pace'] = request.form['pace'] 
 
+    if c.checkRunner(session['date'] ,session['distance'],session['Num_time']):
+        if c.checkDigit(session['distance'],session['Num_time']):
+            session['pace'] = request.form['pace'] 
+            cur = mysql.connection.cursor()
+            cur.execute("INSERT INTO runner (mem_id,distance,Num_time,pace,date) VALUES (%s,%s,%s,%s,%s)",(session['mem_id'],session['distance'],session['Num_time'],session['pace'],session['date']))  # INSERT Database
+            print(cur)
+            mysql.connection.commit()
 
-    cur = mysql.connection.cursor()
-    cur.execute("INSERT INTO runner (mem_id,distance,Num_time,pace,date) VALUES (%s,%s,%s,%s,%s)",(session['mem_id'],session['distance'],session['Num_time'],session['pace'],session['date']))  # INSERT Database
-    print(cur)
-    mysql.connection.commit()
-
-    return redirect(url_for("Runner"))
+            return redirect(url_for("Runner"))
+        else:
+            print("ใส่ตัวเลข")
+            flash("กรุณากรอกตัวเลข")
+            return redirect(url_for("clear"))
+    else:
+        print("ไม่ผ่านนน")
+        flash("กรุณากรอกข้อมูลให้ครบ")
+        return redirect(url_for("Runner"))
 # -------------- show status --------------
+
+
+
+
+
+
+
+@app.route('/clear')
+def clear():
+    session['date'] = ""
+    session['distance'] = ""
+    session['Num_time'] = ""
+    session['pace'] = ""
+    return redirect(url_for("Runner"))
+
+
 
 
 
