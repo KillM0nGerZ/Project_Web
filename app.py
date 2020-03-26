@@ -61,7 +61,7 @@ def login():
         if c.checkLogin(user,username,password):
             print(user[0]['password'])
             if user != ():
-                for i in user:
+                for i in user: #วนหาค่าใน Database
                     if username == i['username']:
                         print(user[0])
                         session['mem_id'] = i['mem_id']
@@ -182,13 +182,23 @@ def runner():
 
     if c.checkRunner(session['date'] ,session['distance'],session['Num_time']):
         if c.checkDigit(session['distance'],session['Num_time']):
-            session['pace'] = request.form['pace'] 
-            cur = mysql.connection.cursor()
-            cur.execute("INSERT INTO runner (mem_id,distance,Num_time,pace,date) VALUES (%s,%s,%s,%s,%s)",(session['mem_id'],session['distance'],session['Num_time'],session['pace'],session['date']))  # INSERT Database
-            print(cur)
-            mysql.connection.commit()
+            if c.checkNUM(session['distance']):
+                if c.checkTime(session['Num_time']):
+                    session['pace'] = request.form['pace'] 
+                    cur = mysql.connection.cursor()
+                    cur.execute("INSERT INTO runner (mem_id,distance,Num_time,pace,date) VALUES (%s,%s,%s,%s,%s)",(session['mem_id'],session['distance'],session['Num_time'],session['pace'],session['date']))  # INSERT Database
+                    print(cur)
+                    mysql.connection.commit()
 
-            return redirect(url_for("Runner"))
+                    return redirect(url_for("Runner"))
+                else:
+                    print("เลขติดลบ")
+                    flash("เวลาห้ามติดลบ")
+                    return redirect(url_for("clear"))
+            else:
+                print("เลขติดลบ")
+                flash("ระยะทางห้ามติดลบ")
+                return redirect(url_for("clear"))
         else:
             print("ใส่ตัวเลข")
             flash("กรุณากรอกตัวเลข")
@@ -221,16 +231,20 @@ def clear():
 def Ranking():
     cur = mysql.connection.cursor()
     # cur.execute("SELECT * FROM ranking ORDER BY distance DESC")
-    cur.execute("SELECT member.name,ranking.distance, ranking.avg_pace FROM ranking INNER JOIN member ON member.mem_id = ranking.mem_id ORDER BY distance DESC")
+    cur.execute("SELECT member.name,ranking.distance, ranking.avg_pace FROM ranking  INNER JOIN member ON member.mem_id = ranking.mem_id ORDER BY avg_pace ASC")
     data = cur.fetchall()
     num=0
     item=[]
+    item2=[]
     for i in data:
         num+=1
         i['num']=num
         item.append(i)
-    item = tuple(item)
-    return render_template("Ranking.html",row=data,num=item)
+    for j in range(0,5):
+        print(item[j])
+        item2.append(item[j])
+    item2 = tuple(item2)
+    return render_template("Ranking.html",row=item2,num=item2)
 
 
 

@@ -43,4 +43,14 @@ def PasswordNUM(password,Cpassword):
         return True
     except:
         return False
+def checkNUM(distance):
+    if int(distance) < 0:
+        return False
+    else:
+        return True
 
+def checkTime(Num_time):
+    if int(Num_time) < 0:
+        return False
+    else:
+        return True

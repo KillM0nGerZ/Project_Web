@@ -153,7 +153,11 @@
     // window.alert(distance);
     var distance = document.getElementById("distance").value;
     var Num_time = document.getElementById("Num_time").value;
-    var result = Num_time / distance;
+    if(distance < 0){
+      var result = 0;
+    }else{
+      var result = Num_time / distance;
+    }
     // window.alert(result);
     var result = result.toFixed(2)
     var x = result.toString();
